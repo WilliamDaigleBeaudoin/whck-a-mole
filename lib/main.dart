@@ -4,9 +4,16 @@ import 'help.dart';
 import 'Page/hightScore.dart';
 import 'Page/scoreValidator.dart';
 import 'Page/about.dart';
+import 'DB.dart';
 
-void main() {
+HighScorer highScorer = HighScorer();
+
+void main() async {
   runApp(const MyApp());
+  WidgetsFlutterBinding.ensureInitialized();
+  highScorer.CreateDB();
+  highScorer.InsertDB();
+  highScorer.SelectDB();
 }
 
 class MyApp extends StatelessWidget {
@@ -41,6 +48,12 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  @override
+  void initState() {
+    highScorer.SelectDB();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     // This method is rerun every time setState is called, for instance as done

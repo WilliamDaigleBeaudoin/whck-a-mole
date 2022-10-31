@@ -1,5 +1,11 @@
 import 'package:flutter/material.dart';
 import '../main.dart';
+import '../DB.dart';
+
+TextEditingController dateTime = TextEditingController();
+TextEditingController nom = TextEditingController();
+TextEditingController score = TextEditingController();
+TextEditingController id = TextEditingController();
 
 class ScoreValidator extends StatelessWidget {
   const ScoreValidator({super.key});
@@ -74,6 +80,34 @@ class ScoreValidator extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
+                      const Text('ID: ',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 15,
+                            color: Colors.white,
+                          )),
+                      Flexible(
+                        child: Container(
+                          width: 200,
+                          child: TextFormField(
+                              controller: id,
+                              style: TextStyle(color: Colors.cyan),
+                              decoration: const InputDecoration(
+                                  enabledBorder: UnderlineInputBorder(
+                                    borderSide: BorderSide(color: Colors.cyan),
+                                  ),
+                                  focusedBorder: UnderlineInputBorder(
+                                    borderSide: BorderSide(color: Colors.cyan),
+                                  ),
+                                  border: UnderlineInputBorder(),
+                                  hintStyle: TextStyle(color: Colors.cyan))),
+                        ),
+                      ),
+                    ]),
+                Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
                       const Text('DATE: ',
                           textAlign: TextAlign.center,
                           style: TextStyle(
@@ -84,6 +118,7 @@ class ScoreValidator extends StatelessWidget {
                         child: Container(
                           width: 200,
                           child: TextFormField(
+                              controller: dateTime,
                               style: TextStyle(color: Colors.cyan),
                               decoration: const InputDecoration(
                                   enabledBorder: UnderlineInputBorder(
@@ -112,6 +147,7 @@ class ScoreValidator extends StatelessWidget {
                         child: Container(
                           width: 200,
                           child: TextFormField(
+                              controller: nom,
                               style: TextStyle(color: Colors.cyan),
                               decoration: const InputDecoration(
                                 enabledBorder: UnderlineInputBorder(
@@ -139,6 +175,7 @@ class ScoreValidator extends StatelessWidget {
                         child: Container(
                           width: 200,
                           child: TextFormField(
+                              controller: score,
                               style: TextStyle(color: Colors.cyan),
                               decoration: const InputDecoration(
                                 enabledBorder: UnderlineInputBorder(
@@ -162,12 +199,16 @@ class ScoreValidator extends StatelessWidget {
                     fixedSize: Size(500, 50),
                     side: BorderSide(width: 2.0, color: Colors.cyan),
                   ),
-                  onPressed: () {},
+                  onPressed: () {
+                    HighScorer().InsertDBStuff(
+                        dateTime.text, nom.text, int.parse(score.text));
+                  },
                   child: const Text(
                     "VALIDATE SCORE",
                     style: TextStyle(fontSize: 15, color: Colors.white),
                   ),
                 ),
+                const ButtonUpdate(text: "UPDATE TABLE"),
                 const Divider(
                   thickness: 1,
                   color: Colors.white,
@@ -186,6 +227,49 @@ class ScoreValidator extends StatelessWidget {
         ),
       ),
       backgroundColor: const Color.fromARGB(255, 15, 26, 41),
+    );
+  }
+}
+
+class ButtonUpdate extends StatefulWidget {
+  final String text;
+  final Color textColor;
+  final Color borderColor;
+  final Color peser;
+  const ButtonUpdate(
+      {super.key,
+      required this.text,
+      this.textColor = Colors.green,
+      this.borderColor = Colors.green,
+      this.peser = Colors.green});
+  @override
+  State<ButtonUpdate> createState() => _ButtonUpdate();
+}
+
+class _ButtonUpdate extends State<ButtonUpdate> {
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: (OutlinedButton(
+        onHover: null,
+        style: OutlinedButton.styleFrom(
+          primary: widget.textColor,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(50.0),
+          ),
+          fixedSize: const Size(500, 50),
+          side: const BorderSide(width: 2.0, color: Colors.cyan),
+        ),
+        onPressed: () {
+          highScorer.UpdateDB(int.parse(id.text), dateTime.text, nom.text,
+              int.parse(score.text));
+        },
+        child: Text(
+          widget.text,
+          style: const TextStyle(fontSize: 20),
+        ),
+      )),
     );
   }
 }

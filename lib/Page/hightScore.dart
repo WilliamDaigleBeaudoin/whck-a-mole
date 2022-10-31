@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:path/path.dart';
 import '../help.dart';
 import '../main.dart';
+import '../playerlist.dart';
+import '../DB.dart';
 
 class HighScore extends StatelessWidget {
   const HighScore({Key? key}) : super(key: key);
+// A method that retrieves all the dogs from the dogs table.
 
   @override
   Widget build(BuildContext context) {
@@ -30,8 +34,8 @@ class HighScore extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: <Widget>[
-                  const Text('HIGHSCORES',
+                children: const <Widget>[
+                  Text('HIGHSCORES',
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         fontSize: 20,
@@ -39,44 +43,15 @@ class HighScore extends StatelessWidget {
                       )),
                   SizedBox(
                     height: 250.0,
-                    child: ListView.builder(
-                      itemBuilder: (context, position) {
-                        DateTime now = DateTime.now();
-                        String formattedDate =
-                            DateFormat('yyyy-MM-dd – kk:mm:ss').format(now);
-                        if (position % 2 == 0) {
-                          return Card(
-                            color: const Color.fromARGB(255, 43, 43, 43),
-                            child: Padding(
-                              padding: const EdgeInsets.all(20.0),
-                              child: Text(
-                                '$formattedDate PLAYER 1                            ${100 - position}',
-                                style: const TextStyle(color: Colors.white),
-                              ),
-                            ),
-                          );
-                        } else {
-                          return Card(
-                            color: const Color.fromARGB(255, 93, 93, 93),
-                            child: Padding(
-                              padding: const EdgeInsets.all(20.0),
-                              child: Text(
-                                '$formattedDate PLAYER 1                            ${100 - position}',
-                                style: const TextStyle(color: Colors.white),
-                              ),
-                            ),
-                          );
-                        }
-                      },
-                      itemCount: 100,
-                    ),
+                    child: PlayerList(),
                   ),
-                  const MenueBoutton(
+                  MenueBoutton(
                       text: "BACK TO MENU",
                       textColor: Colors.white,
                       destination: MyHomePage(
                         title: "",
-                      ))
+                      )),
+                  ButtonDelete(text: "DROP TABLE")
                 ],
               ),
             ),
@@ -84,6 +59,55 @@ class HighScore extends StatelessWidget {
         ),
       ),
       backgroundColor: const Color.fromARGB(255, 15, 26, 41),
+    );
+  }
+}
+
+class ButtonDelete extends StatefulWidget {
+  final String text;
+  final Color textColor;
+  final Color borderColor;
+  final Color peser;
+  const ButtonDelete(
+      {super.key,
+      required this.text,
+      this.textColor = Colors.red,
+      this.borderColor = Colors.red,
+      this.peser = Colors.red});
+  @override
+  State<ButtonDelete> createState() => _ButtonDelete();
+}
+
+class _ButtonDelete extends State<ButtonDelete> {
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: (OutlinedButton(
+        onHover: null,
+        style: OutlinedButton.styleFrom(
+          primary: widget.textColor,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(50.0),
+          ),
+          fixedSize: const Size(500, 50),
+          side: const BorderSide(width: 2.0, color: Colors.cyan),
+        ),
+        onPressed: () {
+          highScorer.DropDB();
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => const MyHomePage(
+                      title: "",
+                    )),
+          );
+        },
+        child: Text(
+          widget.text,
+          style: const TextStyle(fontSize: 20),
+        ),
+      )),
     );
   }
 }
